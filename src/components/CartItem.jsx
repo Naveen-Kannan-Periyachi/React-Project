@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { increaseQuantity, decreaseQuantity, removeFromCart } from '../store/cartSlice'
 import './CartItem.css'
 
 const CartItem = ({ item }) => {
   const dispatch = useDispatch()
+  const [imageError, setImageError] = useState(false)
 
   const handleIncrease = () => {
     dispatch(increaseQuantity(item.id))
@@ -17,10 +19,21 @@ const CartItem = ({ item }) => {
     dispatch(removeFromCart(item.id))
   }
 
+  const handleImageError = () => {
+    setImageError(true)
+  }
+
+  // Fallback image URL for when images fail to load
+  const fallbackImage = 'https://via.placeholder.com/120x120/4a7c59/ffffff?text=🌱'
+
   return (
     <div className="cart-item">
       <div className="item-image">
-        <img src={item.image} alt={item.name} />
+        <img 
+          src={imageError ? fallbackImage : item.image} 
+          alt={item.name}
+          onError={handleImageError}
+        />
       </div>
       <div className="item-details">
         <h3 className="item-name">{item.name}</h3>
